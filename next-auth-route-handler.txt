@@ -1,0 +1,6 @@
+-https://hackernoon.com/6-easy-steps-to-use-next-auth-in-nextjs-13-using-route-handler
+-https://youtu.be/FUDL95L5aW0?si=VTJzOkTWZK0qWOTv
+-https://github.com/alishirani1384/NextAuth-Next.js-13/tree/main
+
+
+

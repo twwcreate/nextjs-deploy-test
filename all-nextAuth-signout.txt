@@ -1,0 +1,152 @@
+-Next.js 13 Authentication with Next Auth - Protected Routes & more
+https://www.youtube.com/watch?v=bLlDwkOyI5c&t=1s
+https://github.com/ghulamabbas2/next-auth-13/tree/with-credentials
+
+****************************************************************
+
+https://github.com/EBEREGIT/nextjs-nextauth-tut
+
+****************************************************************
+
+https://github.com/gitdagray/next-auth-intro/tree/main
+
+****************************************************************
+
+https://github.com/gitdagray/next-auth-intro/tree/main
+
+****************************************************************
+
+Adding email authentication to NextAuth.js
+https://daily-dev-tips.com/posts/adding-email-authentication-to-nextauth/
+https://github.com/rebelchris/next-email-auth
+
+prisma 
+
+****************************************************************
+
+-Next-Auth:
+https://next-auth.js.org/providers/email
+
+-https://next-auth.js.org/configuration/nextjs
+getServerSession() ? getSession() ?
+
+- Next.js - getServerSession
+- https://next-auth.js.org/configuration/nextjs#getserversession
+- https://next-auth.js.org/configuration/nextjs
+- calling from the server-side:
+- in Route Handlers + React Server Components + API routes or 
+- in getServerSideProps, we recommend using this function 
+**instead of getSession to retrieve the session object. 
+- This method is especially useful when you are using NextAuth.js with a database.
+- This method can drastically reduce response time when used over getSession on server-side, due to avoiding an extra fetch to an API Route (this is generally not recommended in Next.js). 
+
+-In addition, getServerSession will correctly update the cookie expiry time 
+and update the session content if callbacks.jwt or callbacks.session changed something.
+-此外，如果callbacks.jwt或callbacks.session發生了某些變化，getServerSession將正確更新cookie過期時間並更新會話內容。
+
+-getServerSession requires passing the same object you would pass to NextAuth when initializing NextAuth.js. To do so, you can export your NextAuth.js options in the following way:getServerSession 需要傳遞與初始化 NextAuth.js 時傳遞給 NextAuth 的相同對象。
+為此，您可以通過以下方式導出 NextAuth.js 選項.
+
+getServerSession配合以下使用:
+
+In [...nextauth].ts:
+
+import NextAuth from 'next-auth'
+import type { NextAuthOptions } from 'next-auth'
+
+export const authOptions: NextAuthOptions = {
+  // your configs
+}
+
+export default NextAuth(authOptions);
+
+****************************************************************
+
+In getServerSideProps:
+-以下設定放在主頁:
+import { authOptions } from 'pages/api/auth/[...nextauth]'
+import { getServerSession } from "next-auth/next"
+
+export async function getServerSideProps(context) {
+  const session = await getServerSession(context.req, context.res, authOptions)
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    }
+  }
+
+  return {
+    props: {
+      session,
+    },
+  }
+}
+
+****************************************************************
+
+In API Routes:
+
+import { authOptions } from 'pages/api/auth/[...nextauth]'
+import { getServerSession } from "next-auth/next"
+
+export default async function handler(req, res) {
+  const session = await getServerSession(req, res, authOptions)
+
+  if (!session) {
+    res.status(401).json({ message: "You must be logged in." });
+    return;
+  }
+
+  return res.json({
+    message: 'Success',
+  })
+}
+
+****************************************************************
+
+In App Router:
+
+You can also use getServerSession in Next.js' server components:
+
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "pages/api/auth/[...nextauth]"
+
+export default async function Page() {
+  const session = await getServerSession(authOptions)
+  return <pre>{JSON.stringify(session, null, 2)}</pre>
+}
+
+
+****************************************************************
+
+danger
+
+Currently, the underlying Next.js cookies() method only provides read access to the request cookies. This means that the expires value is stripped away from session in Server Components. Furthermore, there is a hard expiry on sessions, after which the user will be required to sign in again. (The default expiry is 30 days).
+
+***************************************************************
+
+eg:)
+-例如放在主頁頁面,可以獲取context資料,而不限於任何使用者session.
+getServerSideProps()可以使用getSession:
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  return {
+    props: {
+      session,
+    },
+  };
+}
+
+
+const { data: session } = useSession();
+
+
+
+
+
+
